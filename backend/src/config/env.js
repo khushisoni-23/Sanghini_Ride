@@ -21,8 +21,10 @@ const env = {
   // Database
   MONGODB_URI: process.env.MONGODB_URI || '',
 
-  // CORS
-  CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  // CORS — supports comma-separated list of origins for production
+  CORS_ORIGIN: process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+    : 'http://localhost:5173',
 
   // JWT & Auth
   JWT_SECRET: process.env.JWT_SECRET || 'sanghini_ride_jwt_secret_key_udaipur_2026',
