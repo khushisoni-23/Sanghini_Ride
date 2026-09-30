@@ -1,0 +1,17 @@
+{
+  "name": "sanghini-ride",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sanghini Ride - Women-focused mobility platform",
+  "scripts": {
+    "start": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"blue.bold,magenta.bold\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev": "npm --prefix frontend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build": "npm --prefix frontend run build",
+    "start:backend": "npm --prefix backend start"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}
