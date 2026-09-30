@@ -7,8 +7,18 @@ let socket = null;
  */
 export const getSocket = () => {
   if (!socket) {
-    const socketUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+    const socketUrl =
+      import.meta.env.VITE_SOCKET_URL ||
+      (window.location.hostname.includes('vercel.app')
+        ? 'https://sanghini-ride-1.onrender.com'
+        : window.location.origin);
+    const token =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('sanghini_token') || localStorage.getItem('token')
+        : null;
+
     socket = io(socketUrl, {
+      auth: { token },
       withCredentials: true,
       transports: ['websocket', 'polling'],
       autoConnect: true,

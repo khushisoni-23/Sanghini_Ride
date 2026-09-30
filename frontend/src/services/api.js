@@ -5,8 +5,16 @@ import axios from 'axios';
  * Base URL comes from environment variable or defaults to Vite proxy path.
  * withCredentials: true enables HTTP-only cookie auth.
  */
+const getBaseURL = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+    return 'https://sanghini-ride-1.onrender.com/api';
+  }
+  return '/api';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: getBaseURL(),
   timeout: 15000,
   withCredentials: true, // Send cookies with every request
   headers: {
@@ -16,7 +24,14 @@ const api = axios.create({
 
 // ─── Request Interceptor ───────────────────────────────────────
 api.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    // Send Authorization Bearer header as reliable cross-domain fallback
+    const token = typeof window !== 'undefined' ? localStorage.getItem('sanghini_token') || localStorage.getItem('token') : null;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error) => Promise.reject(error)
 );
 

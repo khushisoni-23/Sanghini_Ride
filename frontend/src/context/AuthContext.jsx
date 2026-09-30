@@ -29,6 +29,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const res = await api.post('/auth/login', { email, password });
+      if (res.token) {
+        localStorage.setItem('sanghini_token', res.token);
+      }
       setUser(res.user);
       toast.success('Logged in successfully');
       return res.user;
@@ -41,6 +44,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const res = await api.post('/auth/register', userData);
+      if (res.token) {
+        localStorage.setItem('sanghini_token', res.token);
+      }
       setUser(res.user);
       toast.success('Registration successful');
       return res.user;
@@ -64,10 +70,13 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await api.post('/auth/logout');
+    } catch (error) {
+      // Continue cleanup on client
+    } finally {
+      localStorage.removeItem('sanghini_token');
+      localStorage.removeItem('token');
       setUser(null);
       toast.success('Logged out successfully');
-    } catch (error) {
-      toast.error('Logout failed');
     }
   };
 
@@ -87,6 +96,8 @@ export const AuthProvider = ({ children }) => {
   const deleteAccount = async () => {
     try {
       const res = await api.delete('/auth/account');
+      localStorage.removeItem('sanghini_token');
+      localStorage.removeItem('token');
       setUser(null);
       toast.success(res.message || 'Your account has been permanently deleted.');
       return res;

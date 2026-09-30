@@ -24,14 +24,17 @@ export const setTokenCookie = (res, token) => {
   res.cookie('token', token, {
     httpOnly: true,
     secure: isProduction, 
-    sameSite: isProduction ? 'strict' : 'lax', // strict for prod, lax for cross-origin dev
+    sameSite: isProduction ? 'none' : 'lax', // 'none' is REQUIRED for cross-site cookies between vercel.app and onrender.com
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
   });
 };
 
 export const clearTokenCookie = (res) => {
+  const isProduction = env.NODE_ENV === 'production';
   res.cookie('token', '', {
     httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
     expires: new Date(0),
   });
 };
